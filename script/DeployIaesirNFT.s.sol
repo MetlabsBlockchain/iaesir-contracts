@@ -16,7 +16,7 @@ contract DeployIaesirNFT is Script {
         string memory symbol_ = "IASR";
         string memory baseUri_ = "TestUri";
         uint256 totalSupply_ = 10_000;
-        uint256 mintPrice_ = 1_000;
+        uint256 mintPrice_ = 1_000 * 1e18; // USDT is 18 decimals in BSC
         address paymentToken_ = 0x55d398326f99059fF775485246999027B3197955; // USDT en BSC
         address fundsReceiver_ = 0x56E4CF839281f06c6B25a2037C5797C40D35fF2c; // @audit modify
 
