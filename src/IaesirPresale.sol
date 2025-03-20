@@ -152,10 +152,6 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         _unpause();
     }
 
-    function setCurrentPhase(uint256 newPhase) public onlyOwner {
-        currentPhase = newPhase;
-    }
-
     function whitelistUser(address user_, bool whitelist_) external onlyOwner {
         isWhitelisted[user_] = whitelist_;
     }
@@ -164,5 +160,59 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         phases[phaseIndex_][0] = phaseMaxTokens_;
         phases[phaseIndex_][1] = phasePrice_;
         phases[phaseIndex_][2] = phaseEndTime_;
+    }
+
+    function setCurrentPhase(uint256 newPhase) public onlyOwner {
+        currentPhase = newPhase;
+    }
+
+    function setCounterUserPhase0(uint256 counterUserPhase0_) public onlyOwner {
+        counterUserPhase0 = counterUserPhase0_;
+    }
+
+    function setCounterUserPhase1(uint256 counterUserPhase1_) public onlyOwner {
+        counterUserPhase1 = counterUserPhase1_;
+    }
+
+    function setusdPhase0(uint256 usdPhase0_) public onlyOwner {
+        usdPhase0 = usdPhase0_;
+    }
+
+    function setusdPhase1(uint256 usdPhase1_) public onlyOwner {
+        usdPhase1 = usdPhase1_;
+    }
+
+    function setTokensSoldPhase0(uint256 tokensSoldPhase0_) public onlyOwner {
+        tokensSoldPhase0 = tokensSoldPhase0_;
+    }
+
+    function setTokensSoldPhase1(uint256 tokensSoldPhase1_) public onlyOwner {
+        tokensSoldPhase1 = tokensSoldPhase1_;
+    }
+
+    function setPaymentToken(address paymentToken_) public onlyOwner {
+        paymentToken = paymentToken_;
+    }
+
+    function setpaymentWallet(address paymentWallet_) public onlyOwner {
+        paymentWallet = paymentWallet_;
+    }
+
+    function setUserPositionPhase0(address user_, uint256 position_) public onlyOwner {
+        userPositionPhase0[user_] = position_;
+    }
+
+    function setUserPositionPhase1(address user_, uint256 position_) public onlyOwner {
+        userPositionPhase1[user_] = position_;
+    }
+
+    function setUserPhase0(uint256 position_, address userAddress_, uint256 amount_) public onlyOwner {
+        User memory user_ = User({userAddress: userAddress_, amount: amount_});
+        userPhase0[position_] = user_;
+    }
+
+    function setUserPhase1(uint256 position_, address userAddress_, uint256 amount_) public onlyOwner {
+        User memory user_ = User({userAddress: userAddress_, amount: amount_});
+        userPhase1[position_] = user_;
     }
 }   
