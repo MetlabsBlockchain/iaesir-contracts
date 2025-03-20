@@ -63,7 +63,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         uint256 tokenAmountToReceive = amount_ * 1e6 / phases[currentPhase][1];
 
         checkIfEnoughTokens(tokenAmountToReceive);
-
+       
         if (currentPhase == 0) {
             usdPhase0 += amount_;
             tokensSoldPhase0 += tokenAmountToReceive;
@@ -73,8 +73,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
                 userPhase0[counterUserPhase0] = User({userAddress: msg.sender, amount: tokenAmountToReceive});
                 userPositionPhase0[msg.sender] = counterUserPhase0;
             } else { 
-                User memory previousData = userPhase0[counterUserPhase0];
-                 console.log("IM HERE", previousData.userAddress, previousData.amount);
+                User memory previousData = userPhase0[position]; 
                 userPhase0[position] = User({userAddress: msg.sender, amount: previousData.amount + tokenAmountToReceive});
             }
         } else { 
@@ -86,7 +85,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
                 userPhase1[counterUserPhase1] = User({userAddress: msg.sender, amount: tokenAmountToReceive});
                 userPositionPhase1[msg.sender] = counterUserPhase1;
             } else { 
-                User memory previousData = userPhase1[counterUserPhase1];
+                User memory previousData = userPhase1[position];
                 userPhase1[position] = User({userAddress: msg.sender, amount: previousData.amount + tokenAmountToReceive});
             }
         }
@@ -115,7 +114,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
                 userPhase0[counterUserPhase0] = User({userAddress: msg.sender, amount: tokenAmountToReceive});
                 userPositionPhase0[msg.sender] = counterUserPhase0;
             } else { 
-                User memory previousData = userPhase0[counterUserPhase0];
+                User memory previousData = userPhase0[position];
                 userPhase0[position] = User({userAddress: msg.sender, amount: previousData.amount + tokenAmountToReceive});
             }
         } else { 
@@ -127,7 +126,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
                 userPhase1[counterUserPhase1] = User({userAddress: msg.sender, amount: tokenAmountToReceive});
                 userPositionPhase1[msg.sender] = counterUserPhase1;
             } else { 
-                User memory previousData = userPhase1[counterUserPhase1];
+                User memory previousData = userPhase1[position];
                 userPhase1[position] = User({userAddress: msg.sender, amount: previousData.amount + tokenAmountToReceive});
             }
         }
@@ -161,6 +160,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         phases[phaseIndex_][0] = phaseMaxTokens_;
         phases[phaseIndex_][1] = phasePrice_;
         phases[phaseIndex_][2] = phaseEndTime_;
+    }
+
+    function changePhases(uint256[][3] memory phases_) external onlyOwner {
+        phases = phases_;
     }
 
     function setCurrentPhase(uint256 newPhase) public onlyOwner {
