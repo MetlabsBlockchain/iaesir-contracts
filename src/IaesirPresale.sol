@@ -45,7 +45,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         paymentWallet = paymentWallet_;
         aggregatorContract = IAggregator(aggregatorContract_);
         phases = phases_;
-        thresholdToReferral_ = thresholdToReferral;
+        thresholdToReferral = thresholdToReferral_;
     }
 
     function checkIfEnoughTokens(uint256 tokensToReceive) internal view {
