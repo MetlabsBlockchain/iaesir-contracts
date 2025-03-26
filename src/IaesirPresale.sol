@@ -30,8 +30,8 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     uint256 public thresholdToReferral;
     uint256 public maxTokensReferrer;
     uint256 public maxTokensReferred;
-    uint256 public rewardPercentageReferrer = 300; // 3%
-    uint256 public rewardPercentageReferred = 300; // 3%
+    uint256 public rewardPercentageReferrer = 3; // 3%
+    uint256 public rewardPercentageReferred = 3; // 3%
     address public paymentToken;
     address public paymentWallet;
     uint256[][3] public phases;
