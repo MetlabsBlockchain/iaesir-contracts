@@ -146,10 +146,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         // Check if user has invested more than $250
         uint256 positionPhase0 = userPositionPhase0[msg.sender];
         User memory userDataPhase0 = userPhase0[positionPhase0];
-        uint256 amountInPhase0 = userDataPhase0.amount * phases[0][1];
+        uint256 amountInPhase0 = userDataPhase0.amount * phases[0][1] / 1e6;
         uint256 positionPhase1 = userPositionPhase1[msg.sender];
         User memory userDataPhase1 = userPhase0[positionPhase1];
-        uint256 amountInPhase1 = userDataPhase1.amount * phases[1][1];
+        uint256 amountInPhase1 = userDataPhase1.amount * phases[1][1] / 1e6;
         require(amountInPhase0 + amountInPhase1 >= thresholdToReferral, "Not invested minimum amount");
 
         bytes memory code = abi.encodePacked(msg.sender, block.number);
