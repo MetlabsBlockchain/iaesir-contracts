@@ -17,11 +17,13 @@ contract DeployIaesirPresale is Script {
         address aggregatorContract_ = 0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE; // PriceFeed BNB/USD en BSC
         address paymentWallet_ = 0x56E4CF839281f06c6B25a2037C5797C40D35fF2c; 
         uint256 referralThreshold = 250 * 1e18;
+        uint256 maxTokensReferrer = 1_000_000 * 1e18;
+        uint256 maxTokensReferred = 1_000_000 * 1e18;
 
         phases_[0] = [110_000_000  * 10**18, 40000, 47128000]; // @audit CAMBIAR A FINAL
         phases_[1] = [200_000_00  * 10**18, 5000, 47188000]; // @audit CAMBIAR A FINAL
 
-        IaesirPresale presale = new IaesirPresale(phases_, usdtAddress_, paymentWallet_, aggregatorContract_, referralThreshold);
+        IaesirPresale presale = new IaesirPresale(phases_, usdtAddress_, paymentWallet_, aggregatorContract_, referralThreshold, maxTokensReferrer, maxTokensReferred);
 
         vm.stopBroadcast();
         return presale;
