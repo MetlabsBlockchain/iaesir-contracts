@@ -140,10 +140,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         emit TokensBought(msg.sender, tokenAmountToReceive, usdAmount, block.timestamp);
     }
 
-    function generateReferralCode() public {
-        require(referralCode[msg.sender].length != 0, "Already generated code");
+    function generateReferralCode() public returns (bytes memory) {
+        require(referralCode[msg.sender].length == 0, "Already generated code");
 
-        // Check if user has invested more than $250
+        // Check if user has invested more than referralThreshold within the 2 phases
         uint256 positionPhase0 = userPositionPhase0[msg.sender];
         User memory userDataPhase0 = userPhase0[positionPhase0];
         uint256 amountInPhase0 = userDataPhase0.amount * phases[0][1] / 1e6;
@@ -154,6 +154,11 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
         bytes memory code = abi.encodePacked(msg.sender, block.number);
         referralCode[msg.sender] = code;
+        return code;
+    }
+
+    function checkReferralCode() public view returns(bytes memory) {
+        return referralCode[msg.sender];
     }
 
     function getLatestPrice() public view returns (uint256) {
