@@ -149,52 +149,59 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
         uint256 referralTokenAmountToReceiveReferrer;
         uint256 referralTokenAmountToReceiveReferred;
-        if (referralCode_.length != 0 && referralCodeToAddress[referralCode_] != address(0)) {
+        bool isUsingReferralCode = (referralCode_.length != 0 && referralCodeToAddress[referralCode_] != address(0));
+        if (isUsingReferralCode) {
+            address codeCreator = checkReferralCodeCreator(referralCode_);
+            require(codeCreator != msg.sender, "Can not use your own code");
             referralTokenAmountToReceiveReferrer = mulScale(tokenAmountToReceive, rewardPercentageReferrer, 100); // Rewards for referrer
             referralTokenAmountToReceiveReferred = mulScale(tokenAmountToReceive, rewardPercentageReferred, 100); // Rewards for referred
         }
 
-        require(referralTokenAmountToReceiveReferred <= maxTokensReferred, "Limit for referred");
-
         if (currentPhase == 0) {
             usdPhase0 += usdAmount;
             tokensSoldPhase0 += tokenAmountToReceive;
+
+            // Update referred info
             uint256 position = userPositionPhase0[msg.sender];
-            if (position == 0) {
-                counterUserPhase0++;
-                userPhase0[counterUserPhase0] = User({userAddress: msg.sender, amount: tokenAmountToReceive, referralAmount: referralTokenAmountToReceiveReferred});
-                userPositionPhase0[msg.sender] = counterUserPhase0;
-            } else { 
-                User memory previousData = userPhase0[position];
-                userPhase0[position] = User({userAddress: msg.sender, amount: previousData.amount + tokenAmountToReceive, referralAmount: previousData.referralAmount + referralTokenAmountToReceiveReferred});
+            if (position == 0) { // Referred did not invest in this phase
+                addNewUserPhase0(msg.sender, tokenAmountToReceive, referralTokenAmountToReceiveReferred, 0);
+            } else { // Referred already invested in this phase
+                updateExistingUserPhase0(position, tokenAmountToReceive, referralTokenAmountToReceiveReferred, 0);
             }
 
-            // Update referralAmount for referrer
-            address referrer = referralCodeToAddress[referralCode_];
-            uint256 positionReferrer = userPositionPhase0[referrer];
-            User memory referrerStruct = userPhase0[positionReferrer];
-            require(referrerStruct.referralAmount + referralTokenAmountToReceiveReferrer <= maxTokensReferrer, "Limit for referrer phase0");
-            userPhase0[positionReferrer] = User({userAddress: referrerStruct.userAddress, amount: referrerStruct.amount, referralAmount: referrerStruct.referralAmount + referralTokenAmountToReceiveReferrer});
+            if (isUsingReferralCode) {
+                // Update referrer info
+                address referrer = referralCodeToAddress[referralCode_];
+                uint256 positionReferrer = userPositionPhase0[referrer];
+                if (positionReferrer == 0) { // Refferer did not invest in this phase
+                    addNewUserPhase0(referrer, 0, referralTokenAmountToReceiveReferrer, 1);
+                } else { // Referrer already invested in this phase
+                    updateExistingUserPhase0(positionReferrer, 0, referralTokenAmountToReceiveReferred, 1);
+                }
+            }
         
         } else { 
             usdPhase1 += usdAmount;
             tokensSoldPhase1 += tokenAmountToReceive;
+
+            // Update referred info
             uint256 position = userPositionPhase1[msg.sender];
-            if (position == 0) {
-                counterUserPhase1++;
-                userPhase1[counterUserPhase1] = User({userAddress: msg.sender, amount: tokenAmountToReceive, referralAmount: referralTokenAmountToReceiveReferred});
-                userPositionPhase1[msg.sender] = counterUserPhase1;
-            } else { 
-                User memory previousData = userPhase1[position];
-                userPhase1[position] = User({userAddress: msg.sender, amount: previousData.amount + tokenAmountToReceive, referralAmount: previousData.amount + referralTokenAmountToReceiveReferred});
+            if (position == 0) { // Referred did not invest in this phase
+                addNewUserPhase1(msg.sender, tokenAmountToReceive, referralTokenAmountToReceiveReferred, 0);
+            } else { // Referred already invested in this phase
+                updateExistingUserPhase1(position, tokenAmountToReceive, referralTokenAmountToReceiveReferred, 0);
             }
 
-            // Update referralAmount for referrer
-            address referrer = referralCodeToAddress[referralCode_];
-            uint256 positionReferrer = userPositionPhase1[referrer];
-            User memory referrerStruct = userPhase1[positionReferrer];
-            require(referrerStruct.referralAmount + referralTokenAmountToReceiveReferrer <= maxTokensReferrer, "Limit for referrer phase1");
-            userPhase1[positionReferrer] = User({userAddress: referrerStruct.userAddress, amount: referrerStruct.amount, referralAmount: referrerStruct.referralAmount + referralTokenAmountToReceiveReferrer});
+            if(isUsingReferralCode) {
+                // Update referred info
+                address referrer = referralCodeToAddress[referralCode_];
+                uint256 positionReferrer = userPositionPhase1[referrer];
+                if (positionReferrer == 0) { // Referrer did not invest in this phase
+                    addNewUserPhase1(referrer, 0, referralTokenAmountToReceiveReferrer, 1);
+                } else { // Referrer already invested in this phase
+                    updateExistingUserPhase1(positionReferrer, 0, referralTokenAmountToReceiveReferred, 1);
+                }
+            }
         }
 
         (bool success, ) = paymentWallet.call{value: msg.value}('');
