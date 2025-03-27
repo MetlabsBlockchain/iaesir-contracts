@@ -243,10 +243,6 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         return uint256(price);
     }
 
-    function setThresholdToReferral(uint256 newThreshold_) public onlyOwner() {
-        thresholdToReferral = newThreshold_;
-    }
-
     function pausePresale() public onlyOwner {
         _pause();
     }
@@ -263,6 +259,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         phases[phaseIndex_][0] = phaseMaxTokens_;
         phases[phaseIndex_][1] = phasePrice_;
         phases[phaseIndex_][2] = phaseEndTime_;
+    }
+
+    function setThresholdToReferral(uint256 newThreshold_) public onlyOwner() {
+        thresholdToReferral = newThreshold_;
     }
 
     function changePhases(uint256[][3] memory phases_) external onlyOwner {
@@ -337,6 +337,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
     function setRewardPercentageReferred(uint256 newValue_) public onlyOwner() {
         rewardPercentageReferred = newValue_;
+    }
+
+    function setAggregatorContract(address newContract_) public onlyOwner() {
+        aggregatorContract = IAggregator(newContract_);
     }
 
     function mulScale (uint x, uint y, uint128 scale) internal pure returns (uint) {
