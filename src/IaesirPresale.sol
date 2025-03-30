@@ -228,8 +228,8 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         return code;
     }
 
-    function checkReferralCode() public view returns(bytes memory) {
-        return referralCode[msg.sender];
+    function checkReferralCode(address user_) public view returns(bytes memory) {
+        return referralCode[user_];
     }
 
     function checkReferralCodeCreator(bytes memory code) public view returns(address) {
