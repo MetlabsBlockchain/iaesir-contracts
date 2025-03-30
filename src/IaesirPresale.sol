@@ -32,7 +32,8 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     uint256 public maxTokensReferred;
     uint256 public rewardPercentageReferrer = 3; // 3%
     uint256 public rewardPercentageReferred = 3; // 3%
-    address public paymentToken;
+    address public paymentToken0;
+    address public paymentToken1;
     address public paymentWallet;
     uint256[][3] public phases;
 
@@ -46,8 +47,9 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
     event TokensBought(address indexed user, uint256 indexed tokensBought, uint256 usdRaised, uint256 timestamp);
 
-    constructor(uint256[][3] memory phases_, address paymentToken_, address paymentWallet_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(paymentWallet_) {
-        paymentToken = paymentToken_;
+    constructor(uint256[][3] memory phases_, address paymentToken0_, address paymentToken1_, address paymentWallet_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(paymentWallet_) {
+        paymentToken0 = paymentToken0_;
+        paymentToken1 = paymentToken1_;
         paymentWallet = paymentWallet_;
         aggregatorContract = IAggregator(aggregatorContract_);
         phases = phases_;
@@ -66,8 +68,9 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         else if (phase_ == 1) require (block.timestamp <= phases[phase_][2], "Phase1 ending time reached");
     }
 
-    function buyWithStable(uint256 amount_, bytes memory referralCode_) external whenNotPaused nonReentrant {
+    function buyWithStable(address paymentToken_, uint256 amount_, bytes memory referralCode_) external whenNotPaused nonReentrant {
         require(amount_ > 0, 'Amount can not be zero');
+        require(paymentToken_ == paymentToken0 || paymentToken_ == paymentToken1, "Incorrect token");
         if (currentPhase == 0) require(isWhitelisted[msg.sender], "User not whitelisted");
         checkPhaseEndingTime(currentPhase);
 
@@ -132,7 +135,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
             }
         }
 
-        IERC20(paymentToken).safeTransferFrom(msg.sender, paymentWallet, amount_);
+        IERC20(paymentToken_).safeTransferFrom(msg.sender, paymentWallet, amount_);
 
         emit TokensBought(msg.sender, tokenAmountToReceive, amount_, block.timestamp);
     }
@@ -297,8 +300,12 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         tokensSoldPhase1 = tokensSoldPhase1_;
     }
 
-    function setPaymentToken(address paymentToken_) public onlyOwner {
-        paymentToken = paymentToken_;
+    function setPaymentToken0(address paymentToken_) public onlyOwner {
+        paymentToken0 = paymentToken_;
+    }
+
+    function setPaymentToken1(address paymentToken_) public onlyOwner {
+        paymentToken1 = paymentToken_;
     }
 
     function setpaymentWallet(address paymentWallet_) public onlyOwner {

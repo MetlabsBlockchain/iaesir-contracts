@@ -8,6 +8,7 @@ import "../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 contract IaesirPresaleTest is Test { 
     IaesirPresale presale;
     address usdtAddress = 0x55d398326f99059fF775485246999027B3197955; // USDT BSC
+    address usdcAddress = 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d; // USC BSC
     address aggregatorContract = 0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE; // PriceFeed BNB/USD en BSC
     address paymentWallet = 0x56E4CF839281f06c6B25a2037C5797C40D35fF2c;
     address randomRealUser = 0x4597C25089363788e75a32d0FbB5B334862570b6;
@@ -26,12 +27,12 @@ contract IaesirPresaleTest is Test {
         phases[1] = [200_000_00 * 10**18, 50000, endTimePhase1];
 
         vm.startPrank(paymentWallet);
-        presale = new IaesirPresale(phases, usdtAddress, paymentWallet, aggregatorContract, referralThreshold, maxTokensReferrer, maxTokensReferred);
+        presale = new IaesirPresale(phases, usdtAddress, usdcAddress, paymentWallet, aggregatorContract, referralThreshold, maxTokensReferrer, maxTokensReferred);
         vm.stopPrank();
     }
 
     function testInitialValues() public view {
-        assertEq(presale.paymentToken(), usdtAddress);
+        assertEq(presale.paymentToken0(), usdtAddress);
         assertEq(presale.paymentWallet(), paymentWallet);
         assertEq(address(presale.aggregatorContract()), aggregatorContract);
     }
@@ -105,7 +106,7 @@ contract IaesirPresaleTest is Test {
         IERC20(usdtAddress).approve(address(presale), amount);
         vm.expectRevert("User not whitelisted");
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         vm.stopPrank();
     }
 
@@ -115,7 +116,7 @@ contract IaesirPresaleTest is Test {
         IERC20(usdtAddress).approve(address(presale), amount);
         vm.expectRevert('Amount can not be zero');
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         vm.stopPrank();
     }
 
@@ -127,7 +128,7 @@ contract IaesirPresaleTest is Test {
         vm.warp(endTimePhase0 + 1);
         vm.expectRevert('Phase0 ending time reached');
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         vm.stopPrank();
     }
 
@@ -137,7 +138,7 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         vm.stopPrank();
     }
 
@@ -149,7 +150,7 @@ contract IaesirPresaleTest is Test {
         uint256 usdPhase0Before = presale.usdPhase0();
         uint256 tokensSoldPhase0Before = presale.tokensSoldPhase0();
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         uint256 usdPhase0After = presale.usdPhase0();
         uint256 tokensSoldPhase0After = presale.tokensSoldPhase0();
         vm.assertTrue(usdPhase0After == usdPhase0Before + amount);
@@ -169,7 +170,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2,) = presale.userPhase0(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 != 0);
@@ -194,7 +195,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2,) = presale.userPhase0(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 == buyExpectedAmount);
@@ -207,7 +208,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress3 == paymentWallet);
         assert(amountTokens3 == buyExpectedAmount);
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress4, uint256 amountTokens4, ) = presale.userPhase0(userPosition);
         assert(userAddress4 == paymentWallet);
         assert(amountTokens4 == buyExpectedAmount * 2);
@@ -224,7 +225,7 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         vm.stopPrank();
     }
 
@@ -236,7 +237,7 @@ contract IaesirPresaleTest is Test {
         uint256 usdPhase1Before = presale.usdPhase1();
         uint256 tokensSoldPhase1Before = presale.tokensSoldPhase1();
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         uint256 usdPhase0After = presale.usdPhase0();
         uint256 usdPhase1After = presale.usdPhase1();
         uint256 tokensSoldPhase1After = presale.tokensSoldPhase1();
@@ -258,7 +259,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2, ) = presale.userPhase1(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 != 0);
@@ -287,7 +288,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2, ) = presale.userPhase1(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 == buyExpectedAmount);
@@ -300,7 +301,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress3 == paymentWallet);
         assert(amountTokens3 == buyExpectedAmount);
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress4, uint256 amountTokens4,) = presale.userPhase1(userPosition);
         assert(userAddress4 == paymentWallet);
         assert(amountTokens4 == buyExpectedAmount * 2);
@@ -403,7 +404,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2, ) = presale.userPhase0(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 != 0);
@@ -443,7 +444,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2, ) = presale.userPhase0(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 != 0);
@@ -490,7 +491,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2,) = presale.userPhase0(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 != 0);
@@ -510,7 +511,7 @@ contract IaesirPresaleTest is Test {
         (address userAddress3, uint256 amountTokens3,) = presale.userPhase0(userPosition2);
         assert(userAddress3 == address(0));
         assert(amountTokens3 == 0);
-        presale.buyWithStable(amount2, noCode);
+        presale.buyWithStable(usdtAddress, amount2, noCode);
         (address userAddress4, uint256 amountTokens4,) = presale.userPhase0(userPosition2);
         assert(userAddress4 == randomRealUser);
         assert(amountTokens4 != 0);
@@ -538,7 +539,7 @@ contract IaesirPresaleTest is Test {
         assert(amountTokens6 != 0);
         assert(userAddress7 == address(0));
         assert(amountTokens7 == 0);
-        presale.buyWithStable(amount3, noCode);
+        presale.buyWithStable(usdtAddress, amount3, noCode);
         (address userAddress8, uint256 amountTokens8,) = presale.userPhase0(userPosition3);
         (address userAddress9, uint256 amountTokens9,) = presale.userPhase0(userPosition4);
         assert(userAddress8 == paymentWallet);
@@ -602,8 +603,8 @@ contract IaesirPresaleTest is Test {
     function testSetPaymentToken() public {
         address newToken = 0x1234567890123456789012345678901234567890;
         vm.startPrank(paymentWallet);
-        presale.setPaymentToken(newToken);
-        assertEq(presale.paymentToken(), newToken);
+        presale.setPaymentToken0(newToken);
+        assertEq(presale.paymentToken0(), newToken);
         vm.stopPrank();
     }
 
@@ -661,7 +662,7 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         
         presale.generateReferralCode();
         vm.expectRevert("Already generated code");
@@ -675,10 +676,10 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
 
         presale.generateReferralCode();
-        bytes memory code = presale.checkReferralCode();
+        bytes memory code = presale.checkReferralCode(paymentWallet);
         assert(code.length > 0);
         vm.stopPrank();
     }
@@ -689,7 +690,7 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 1e17;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
 
         vm.expectRevert("Not invested minimum amount");
         presale.generateReferralCode();
@@ -704,17 +705,17 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
 
         presale.generateReferralCode();
-        bytes memory code = presale.checkReferralCode();
+        bytes memory code = presale.checkReferralCode(paymentWallet);
         assert(code.length > 0);
         vm.stopPrank();
 
         vm.startPrank(user2);
 
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, code);
+        presale.buyWithStable(usdtAddress, amount, code);
         uint256 userPosition = 2;
         (address user, uint256 tokensAmount, uint256 referralAmount) = presale.userPhase0(userPosition);
         assert(user == user2);
@@ -728,23 +729,23 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
 
         presale.generateReferralCode();
-        bytes memory code = presale.checkReferralCode();
+        bytes memory code = presale.checkReferralCode(paymentWallet);
         assert(code.length > 0);
         vm.stopPrank();
 
         vm.startPrank(user2);
 
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, code);
+        presale.buyWithStable(usdtAddress, amount, code);
         uint256 userPosition = 2;
         (address user, uint256 tokensAmount, uint256 referralAmount) = presale.userPhase0(userPosition);
         assert(user == user2 && referralAmount > 0);
 
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, code);
+        presale.buyWithStable(usdtAddress, amount, code);
         (address user2, uint256 tokensAmount2, uint256 referralAmount2) = presale.userPhase0(userPosition);
         assert(tokensAmount2 == tokensAmount * 2);
         assert(referralAmount2 == referralAmount * 2);
@@ -764,17 +765,17 @@ contract IaesirPresaleTest is Test {
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
 
         presale.generateReferralCode();
-        bytes memory code = presale.checkReferralCode();
+        bytes memory code = presale.checkReferralCode(paymentWallet);
         assert(code.length > 0);
         vm.stopPrank();
 
         vm.startPrank(user2);
 
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, code);
+        presale.buyWithStable(usdtAddress, amount, code);
         uint256 userPosition = 2;
         (address user, uint256 tokensAmount, uint256 referralAmount) = presale.userPhase0(userPosition);
         presale.userPhase0(1);
@@ -790,7 +791,7 @@ contract IaesirPresaleTest is Test {
         vm.startPrank(user2);
 
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, code);
+        presale.buyWithStable(usdtAddress, amount, code);
         (address user2_, uint256 tokensAmount2, uint256 referralAmount2) = presale.userPhase1(1);
         assert(user2_ == user2);
         assert(tokensAmount2 < tokensAmount);
@@ -809,7 +810,7 @@ contract IaesirPresaleTest is Test {
 
         vm.startPrank(paymentWallet);
         IERC20(usdtAddress).approve(address(presale), amount);
-        presale.buyWithStable(amount, userCode);
+        presale.buyWithStable(usdtAddress, amount, userCode);
          presale.userPhase1(1);
         (address user4, uint256 tokensAmount4, uint256 referralAmount4) = presale.userPhase1(2);
         assert(user4 == paymentWallet);
@@ -836,7 +837,7 @@ contract IaesirPresaleTest is Test {
         assert(userAddress == address(0));
         assert(amountTokens == 0);
         bytes memory noCode = bytes("");
-        presale.buyWithStable(amount, noCode);
+        presale.buyWithStable(usdtAddress, amount, noCode);
         (address userAddress2, uint256 amountTokens2, ) = presale.userPhase0(userPosition);
         assert(userAddress2 == paymentWallet);
         assert(amountTokens2 != 0);
