@@ -41,7 +41,6 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     mapping(address => uint256) public userPositionPhase1;
     mapping(uint256 => User) public userPhase0;
     mapping(uint256 => User) public userPhase1;
-    mapping(address => bool) public isWhitelisted;
     mapping(address => bytes) public referralCode;
     mapping(bytes => address) public referralCodeToAddress;
 
@@ -71,7 +70,6 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     function buyWithStable(address paymentToken_, uint256 amount_, bytes memory referralCode_) external whenNotPaused nonReentrant {
         require(amount_ > 0, 'Amount can not be zero');
         require(paymentToken_ == paymentToken0 || paymentToken_ == paymentToken1, "Incorrect token");
-        if (currentPhase == 0) require(isWhitelisted[msg.sender], "User not whitelisted");
         checkPhaseEndingTime(currentPhase);
 
         uint256 tokenAmountToReceive = amount_ * 1e6 / phases[currentPhase][1];
@@ -142,7 +140,6 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
     function buyWithEther(bytes memory referralCode_) external payable whenNotPaused nonReentrant {
         require(msg.value > 0, 'Amount can not be zero');
-        if (currentPhase == 0) require(isWhitelisted[msg.sender], "User not whitelisted");
         checkPhaseEndingTime(currentPhase);
 
         uint256 usdAmount = msg.value * getLatestPrice() / 1e18; 
@@ -252,10 +249,6 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
     function unpausePresale() public onlyOwner {
         _unpause();
-    }
-
-    function whitelistUser(address user_, bool whitelist_) external onlyOwner {
-        isWhitelisted[user_] = whitelist_;
     }
 
     function updatePhase(uint256 phaseIndex_, uint256 phaseMaxTokens_, uint256 phasePrice_, uint256 phaseEndTime_) external onlyOwner {
