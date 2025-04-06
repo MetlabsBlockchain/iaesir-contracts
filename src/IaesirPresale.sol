@@ -19,6 +19,11 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         uint256 referralAmount;
     }
 
+    struct ReferralStats {
+        address referred;
+        uint256 amount;
+    }
+
     IAggregator public aggregatorContract;
     uint256 public counterUserPhase0;
     uint256 public counterUserPhase1;
@@ -43,6 +48,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     mapping(uint256 => User) public userPhase1;
     mapping(address => bytes) public referralCode;
     mapping(bytes => address) public referralCodeToAddress;
+    mapping (bytes => uint256) public totalEarnedTokensByReferalCode;
+    mapping (bytes => uint256) public referralCodeUses;
+    mapping (bytes => mapping (uint256 => ReferralStats)) public referralStatsList;
+    mapping(bytes => uint256) public referralCodeCounter;
 
     event TokensBought(address indexed user, uint256 indexed tokensBought, uint256 usdRaised, uint256 timestamp);
     event GenerateCode(address indexed user, bytes indexed code);
@@ -85,6 +94,13 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
             require(codeCreator != msg.sender, "Can not use your own code");
             referralTokenAmountToReceiveReferrer = mulScale(tokenAmountToReceive, rewardPercentageReferrer, 100); // Rewards for referrer
             referralTokenAmountToReceiveReferred = mulScale(tokenAmountToReceive, rewardPercentageReferred, 100); // Rewards for referred
+            referralCodeUses[referralCode_] += 1;
+            totalEarnedTokensByReferalCode[referralCode_] += referralTokenAmountToReceiveReferrer;
+
+            uint256 counter = referralCodeCounter[referralCode_];
+            ReferralStats memory stats = ReferralStats({referred: msg.sender, amount: referralTokenAmountToReceiveReferred});
+            referralStatsList[referralCode_][counter] = stats;
+            referralCodeCounter[referralCode_] += 1;
         }
 
         if (currentPhase == 0) {
@@ -156,6 +172,13 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
             require(codeCreator != msg.sender, "Can not use your own code");
             referralTokenAmountToReceiveReferrer = mulScale(tokenAmountToReceive, rewardPercentageReferrer, 100); // Rewards for referrer
             referralTokenAmountToReceiveReferred = mulScale(tokenAmountToReceive, rewardPercentageReferred, 100); // Rewards for referred
+            referralCodeUses[referralCode_] += 1;
+            totalEarnedTokensByReferalCode[referralCode_] += referralTokenAmountToReceiveReferrer;
+
+            uint256 counter = referralCodeCounter[referralCode_];
+            ReferralStats memory stats = ReferralStats({referred: msg.sender, amount: referralTokenAmountToReceiveReferred});
+            referralStatsList[referralCode_][counter] = stats;
+            referralCodeCounter[referralCode_] += 1;
         }
 
         if (currentPhase == 0) {
