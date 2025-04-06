@@ -122,7 +122,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanNotBuyIfEndTimePhased() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        // presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         vm.warp(endTimePhase0 + 1);
@@ -134,7 +134,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanBuyWithStable() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        // presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -144,7 +144,7 @@ contract IaesirPresaleTest is Test {
 
     function testVariablesAreCorrectlyUpdateWhenBuyingWithStable() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        // presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         uint256 usdPhase0Before = presale.usdPhase0();
@@ -160,7 +160,7 @@ contract IaesirPresaleTest is Test {
 
     function testCheckUserDataHasBeenCorrectlySetWhenBuyingWithStable() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        // presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         
@@ -183,7 +183,7 @@ contract IaesirPresaleTest is Test {
 
     function testCheckUserDataHasBeenCorrectlySetWhenBuyingWithStable2TimesSameUser() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        // presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         
@@ -276,7 +276,7 @@ contract IaesirPresaleTest is Test {
     function testCheckUserDataHasBeenCorrectlySetWhenBuyingWithStable2TimesSameUserPhase1() public {
         vm.startPrank(paymentWallet);
         presale.setCurrentPhase(1);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         
@@ -317,7 +317,7 @@ contract IaesirPresaleTest is Test {
 
     function testBuyWithEtherCorrectlyPhase0() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1000000000000000; // 0.001 ether
         bytes memory noCode = bytes("");
         presale.buyWithEther{value: amount}(noCode);
@@ -326,7 +326,7 @@ contract IaesirPresaleTest is Test {
 
     function testCheckUserDataHasBeenCorrectlySetWhenBuyingWithEther() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1000000000000000; // 0.001 ether
        
         uint256 counterPhase0Before = presale.counterUserPhase0();
@@ -348,7 +348,7 @@ contract IaesirPresaleTest is Test {
 
     function testCheckUserDataHasBeenCorrectlySetWhenBuyingWithEther2TimesSameUser() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1000000000000000; // 0.001 ether
         
         // First buy
@@ -392,7 +392,7 @@ contract IaesirPresaleTest is Test {
 
     function testUserCanBuyWithStableAndThenWithEther() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
 
         // Buy Stable
         uint256 amount = 1e18;
@@ -432,7 +432,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanBuyWithStablePhase0AndThenEtherPhase1() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
 
         // Buy Stable
         uint256 amount = 1e18;
@@ -479,7 +479,7 @@ contract IaesirPresaleTest is Test {
 
     function test2UserDepositWhatHappenWithThird() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
 
         // First User deposits
         uint256 amount = 1e18;
@@ -498,7 +498,7 @@ contract IaesirPresaleTest is Test {
 
         uint256 counterPhase0After = presale.counterUserPhase0();
         assert(counterPhase0After == counterPhase0Before + 1);
-        presale.whitelistUser(randomRealUser, true);
+        //presale.whitelistUser(randomRealUser, true);
         vm.stopPrank();
 
         // Second user deposits
@@ -658,7 +658,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanNotGenerateCodeTwice() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -672,7 +672,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanCheckCodeCorrectly() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+       // presale.whitelistUser(paymentWallet, true);
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -686,7 +686,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanNotGenerateCodeIfInvestedLowerThanThreshold() public {
          vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+        //presale.whitelistUser(paymentWallet, true);
         uint256 amount = 1e17;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -700,8 +700,8 @@ contract IaesirPresaleTest is Test {
 
      function testBuyWithStableCorrectlyPhase0AndUpdatesReferral() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
-        presale.whitelistUser(user2, true);
+       // presale.whitelistUser(paymentWallet, true);
+       // presale.whitelistUser(user2, true);
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -724,8 +724,8 @@ contract IaesirPresaleTest is Test {
 
     function testBuyWithStableCorrectlyPhase0AndUpdatesReferral2Times() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
-        presale.whitelistUser(user2, true);
+       // presale.whitelistUser(paymentWallet, true);
+       // presale.whitelistUser(user2, true);
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -760,8 +760,8 @@ contract IaesirPresaleTest is Test {
 
     function testBuyWithStableCorrectlyPhase0AndUpdatesReferral2TimesPhase1() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
-        presale.whitelistUser(user2, true);
+       // presale.whitelistUser(paymentWallet, true);
+       // presale.whitelistUser(user2, true);
         uint256 amount = 2e18;
         IERC20(usdtAddress).approve(address(presale), amount);
         bytes memory noCode = bytes("");
@@ -825,7 +825,7 @@ contract IaesirPresaleTest is Test {
 
     function testCanBuyWithStablePhase0AndThenEtherPhase1WithCode() public {
         vm.startPrank(paymentWallet);
-        presale.whitelistUser(paymentWallet, true);
+       // presale.whitelistUser(paymentWallet, true);
 
         // Buy Stable
         uint256 amount = 1e18;
