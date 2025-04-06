@@ -45,6 +45,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     mapping(bytes => address) public referralCodeToAddress;
 
     event TokensBought(address indexed user, uint256 indexed tokensBought, uint256 usdRaised, uint256 timestamp);
+    event GenerateCode(address indexed user, bytes indexed code);
 
     constructor(uint256[][3] memory phases_, address paymentToken0_, address paymentToken1_, address paymentWallet_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(paymentWallet_) {
         paymentToken0 = paymentToken0_;
@@ -225,7 +226,12 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         bytes memory code = abi.encodePacked(msg.sender, block.number);
         referralCode[msg.sender] = code;
         referralCodeToAddress[code] = msg.sender;
+
+        emit GenerateCode(msg.sender, code);
+
         return code;
+
+        
     }
 
     function checkReferralCode(address user_) public view returns(bytes memory) {
