@@ -87,6 +87,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         checkPhaseEndingTime(currentPhase);
 
         uint256 tokenAmountToReceive = amount_ * 1e6 / phases[currentPhase][1];
+        require(tokenAmountToReceive > 0, "Increase amount");
 
         checkIfEnoughTokens(tokenAmountToReceive);
 
@@ -165,6 +166,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
         uint256 usdAmount = msg.value * getLatestPrice() / 1e18; 
         uint256 tokenAmountToReceive = usdAmount * 1e6 / phases[currentPhase][1]; 
+        require(tokenAmountToReceive > 0, "Increase amount");
 
         checkIfEnoughTokens(tokenAmountToReceive);
 
