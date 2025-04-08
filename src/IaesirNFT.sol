@@ -20,6 +20,8 @@ contract IaesirNFT is ERC721 {
     event TokenMinted(address userAddress_, uint256 tokenId_);
 
     constructor(string memory name_, string memory symbol_, string memory baseUri_, uint256 totalSupply_, uint256 mintPrice_, address paymentToken_, address fundsReceiver_) ERC721(name_, symbol_) {
+        require(paymentToken_ != address(0), "Invalid address");
+        require(fundsReceiver_ != address(0), "Invalid address");
         baseUri = baseUri_;
         paymentToken = paymentToken_;
         totalSupply = totalSupply_;

@@ -57,6 +57,10 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     event GenerateCode(address indexed user, bytes indexed code);
 
     constructor(uint256[][3] memory phases_, address paymentToken0_, address paymentToken1_, address paymentWallet_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(paymentWallet_) {
+        require(paymentToken0_ != address(0), "Invalid address");
+        require(paymentToken1_ != address(0), "Invalid address");
+        require(paymentWallet_ != address(0), "Invalid address");
+        require(aggregatorContract_ != address(0), "Invalid address");
         paymentToken0 = paymentToken0_;
         paymentToken1 = paymentToken1_;
         paymentWallet = paymentWallet_;
@@ -323,10 +327,12 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     }
 
     function setPaymentToken0(address paymentToken_) public onlyOwner {
+        require(paymentToken0 != address(0), "Invalid address");
         paymentToken0 = paymentToken_;
     }
 
     function setPaymentToken1(address paymentToken_) public onlyOwner {
+        require(paymentToken1 != address(0), "Invalid address");
         paymentToken1 = paymentToken_;
     }
 
@@ -369,6 +375,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     }
 
     function setAggregatorContract(address newContract_) public onlyOwner() {
+        require(newContract_ != address(0), "Invalid address");
         aggregatorContract = IAggregator(newContract_);
     }
 
