@@ -29,7 +29,6 @@ contract IaesirNFT is ERC721 {
         paymentToken = paymentToken_;
         totalSupply = totalSupply_;
         mintPrice = mintPrice_;
-        paymentToken = paymentToken_;
         fundsReceiver = fundsReceiver_;
     }
 
