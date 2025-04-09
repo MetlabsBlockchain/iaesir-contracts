@@ -383,6 +383,20 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
         aggregatorContract = IAggregator(newContract_);
     }
 
+    function setReferralCode(address user_, bytes memory code_) public onlyOwner() {
+        referralCode[user_] = code_;
+        referralCodeToAddress[code_] = user_;
+    }
+
+    function setReferralAmountToCode(bytes memory code_, uint256 amount_) public onlyOwner() {
+        totalEarnedTokensByReferalCode[code_] = amount_;
+    }
+
+    function setReferralStatsList(bytes memory referralCode_, uint256 counter, address referred, uint256 referralTokenAmountToReceiveReferred) public onlyOwner() {
+        ReferralStats memory stats = ReferralStats({referred: referred, amount: referralTokenAmountToReceiveReferred});
+        referralStatsList[referralCode_][counter] = stats;
+    }
+
     function mulScale (uint x, uint y, uint128 scale) internal pure returns (uint) {
         uint a = x / scale;
         uint b = x % scale;
