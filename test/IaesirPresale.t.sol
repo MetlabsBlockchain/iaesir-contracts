@@ -11,6 +11,7 @@ contract IaesirPresaleTest is Test {
     address usdcAddress = 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d; // USC BSC
     address aggregatorContract = 0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE; // PriceFeed BNB/USD en BSC
     address paymentWallet = 0x56E4CF839281f06c6B25a2037C5797C40D35fF2c;
+    address owner_ = 0x56E4CF839281f06c6B25a2037C5797C40D35fF2c;
     address randomRealUser = 0x4597C25089363788e75a32d0FbB5B334862570b6;
     uint256 referralThreshold = 1 * 1e18;
     uint256 maxTokensReferrer = 1_000_000 * 1e18;
@@ -27,7 +28,7 @@ contract IaesirPresaleTest is Test {
         phases[1] = [200_000_00 * 10**18, 50000, endTimePhase1];
 
         vm.startPrank(paymentWallet);
-        presale = new IaesirPresale(phases, usdtAddress, usdcAddress, paymentWallet, aggregatorContract, referralThreshold, maxTokensReferrer, maxTokensReferred);
+        presale = new IaesirPresale(phases, usdtAddress, usdcAddress, paymentWallet, owner_, aggregatorContract, referralThreshold, maxTokensReferrer, maxTokensReferred);
         vm.stopPrank();
     }
 

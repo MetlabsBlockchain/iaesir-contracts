@@ -56,7 +56,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
     event GenerateCode(address indexed user, bytes indexed code);
     event CodeUsed(bytes indexed code, uint256 amountReferrer, uint256 amountReferred);
 
-    constructor(uint256[][3] memory phases_, address paymentToken0_, address paymentToken1_, address paymentWallet_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(paymentWallet_) {
+    constructor(uint256[][3] memory phases_, address paymentToken0_, address paymentToken1_, address paymentWallet_, address owner_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(owner_) {
         require(paymentToken0_ != address(0), "Invalid address");
         require(paymentToken1_ != address(0), "Invalid address");
         require(paymentWallet_ != address(0), "Invalid address");
