@@ -55,6 +55,7 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
 
     event TokensBought(address indexed user, uint256 indexed tokensBought, uint256 usdRaised, uint256 timestamp);
     event GenerateCode(address indexed user, bytes indexed code);
+    event CodeUsed(bytes indexed code, uint256 amountReferrer, uint256 amountReferred);
 
     constructor(uint256[][3] memory phases_, address paymentToken0_, address paymentToken1_, address paymentWallet_, address aggregatorContract_, uint256 thresholdToReferral_, uint256 maxTokensReferrer_, uint256 maxTokensReferred_) Ownable(paymentWallet_) {
         require(paymentToken0_ != address(0), "Invalid address");
@@ -106,6 +107,8 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
             ReferralStats memory stats = ReferralStats({referred: msg.sender, amount: referralTokenAmountToReceiveReferred});
             referralStatsList[referralCode_][counter] = stats;
             referralCodeCounter[referralCode_] += 1;
+
+            emit CodeUsed(referralCode_, referralTokenAmountToReceiveReferrer, referralTokenAmountToReceiveReferred);
         }
 
         if (currentPhase == 0) {
@@ -185,6 +188,8 @@ contract IaesirPresale is ReentrancyGuard, Pausable, Ownable {
             ReferralStats memory stats = ReferralStats({referred: msg.sender, amount: referralTokenAmountToReceiveReferred});
             referralStatsList[referralCode_][counter] = stats;
             referralCodeCounter[referralCode_] += 1;
+
+            emit CodeUsed(referralCode_, referralTokenAmountToReceiveReferrer, referralTokenAmountToReceiveReferred);
         }
 
         if (currentPhase == 0) {
